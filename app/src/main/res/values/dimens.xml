@@ -7,6 +7,7 @@
     <dimen name="ic_speak_diameter">32dp</dimen>
     <dimen name="main_controls_radius">32dp</dimen>
     <dimen name="search_bar_height">56dp</dimen>
+    <dimen name="search_bar_height_diff">48dp</dimen>
     <dimen name="search_field_margin_horizontal">72dp</dimen>
     <dimen name="search_field_padding">8dp</dimen>
     <dimen name="bottom_strip_height">4dp</dimen>

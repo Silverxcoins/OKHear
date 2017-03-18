@@ -3,6 +3,6 @@
     <solid
         android:color="#CCFFFFFF"/>
     <corners
-        android:topLeftRadius="@dimen/ic_speak_radius"
-        android:topRightRadius="@dimen/ic_speak_radius" />
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp" />
 </shape>

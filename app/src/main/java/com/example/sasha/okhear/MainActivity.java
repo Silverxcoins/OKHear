@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
     @ViewById(R.id.contacts_recycler_view)
     RecyclerView recyclerView;
 
+    @ViewById(R.id.overlay)
+    Overlay_ overlay;
+
     @Bean
     Preferences preferences;
 
@@ -47,6 +50,17 @@ public class MainActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 setCallButtonsColor(preferences.getSpeakOrShow() == Preferences.SPEAK ? primarySpeakColor : primaryShowColor);
+                if (dy > 50 || dy < -50) {
+                    overlay.hideControls();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    overlay.showControls();
+                }
             }
         });
     }
@@ -60,9 +74,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public int getSpeakOrShow() {
-        return preferences.getSpeakOrShow();
     }
 }

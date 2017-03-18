@@ -21,6 +21,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
+import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 import org.androidannotations.annotations.res.DrawableRes;
 
 @EViewGroup
@@ -42,16 +43,28 @@ public class Overlay extends RelativeLayout {
     View overlayBottomLine;
 
     @ViewById(R.id.left_main_button)
-    ImageView leftMainButton;
+    FrameLayout leftMainButton;
+
+    @ViewById(R.id.left_main_button_background)
+    ImageView leftMainButtonBackground;
 
     @ViewById(R.id.right_main_button)
-    ImageView rightMainButton;
+    FrameLayout rightMainButton;
+
+    @ViewById(R.id.right_main_button_background)
+    ImageView rightMainButtonBackground;
 
     @DrawableRes(R.drawable.ic_hand)
     Drawable handIcon;
 
     @DrawableRes(R.drawable.ic_speak_back)
     Drawable speakIconBack;
+
+    @DimensionPixelSizeRes(R.dimen.search_bar_height)
+    int searchBarHeight;
+
+    @DimensionPixelSizeRes(R.dimen.main_button_diameter)
+    int mainButtonDiameter;
 
     @ColorRes(R.color.colorPrimaryShow)
     int primaryShowColor;
@@ -61,6 +74,8 @@ public class Overlay extends RelativeLayout {
 
     @Bean
     Preferences preferences;
+
+    private volatile boolean controlsHidden = false;
 
     public Overlay(Context context) {
         super(context);
@@ -86,6 +101,49 @@ public class Overlay extends RelativeLayout {
         leftButtonIcon.setEnabled(false);
         startRotateAnimation();
         startColorAnimation();
+    }
+
+    public void hideControls() {
+        showSearchBar(false);
+    }
+
+    public void showControls() {
+        showSearchBar(true);
+    }
+
+    private void showSearchBar(boolean show) {
+        if (show == controlsHidden) {
+            controlsHidden = !controlsHidden;
+
+            int startSearchBarValue = (int) searchBar.getTranslationY();
+            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight);
+            ValueAnimator searchBarAnimator = ValueAnimator.ofInt(startSearchBarValue, endSearchBarValue);
+            searchBarAnimator.setDuration(400);
+            searchBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    int value = (Integer) valueAnimator.getAnimatedValue();
+                    searchBar.setTranslationY(value);
+                }
+            });
+            searchBarAnimator.start();
+
+            int startMainButtonsValue = (int) leftMainButton.getTranslationX();
+            int endMainButtonsValue = (show ? 0 : 0 - mainButtonDiameter);
+            ValueAnimator mainButtonsAnimator = ValueAnimator.ofInt(startMainButtonsValue, endMainButtonsValue);
+            mainButtonsAnimator.setDuration(400);
+            mainButtonsAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    int value = (Integer) valueAnimator.getAnimatedValue();
+                    leftMainButton.setTranslationX(value);
+                    leftMainButton.setTranslationY(0 - value);
+                    rightMainButton.setTranslationX(0 - value);
+                    rightMainButton.setTranslationY(0 - value);
+                }
+            });
+            mainButtonsAnimator.start();
+        }
     }
 
     private void startRotateAnimation() {
@@ -140,8 +198,8 @@ public class Overlay extends RelativeLayout {
     private void setMainColor(int color) {
         searchBarBackground.setColorFilter(color);
         overlayBottomLine.setBackgroundColor(color);
-        leftMainButton.setColorFilter(color);
-        rightMainButton.setColorFilter(color);
+        leftMainButtonBackground.setColorFilter(color);
+        rightMainButtonBackground.setColorFilter(color);
         StatusBarUtils.setStatusBarColor((Activity) getContext(), color);
         ((MainActivity) getContext()).setCallButtonsColor(color);
     }

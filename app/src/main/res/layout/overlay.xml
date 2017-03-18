@@ -47,49 +47,60 @@
         android:layout_height="@dimen/bottom_strip_height"
         android:layout_alignParentBottom="true" />
 
-    <ImageView
+    <FrameLayout
         android:id="@+id/left_main_button"
         android:layout_width="@dimen/main_button_diameter"
         android:layout_height="@dimen/main_button_diameter"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/left_main_button_background"/>
-
-
-    <LinearLayout
-        android:id="@+id/left_main_button_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_alignParentBottom="true">
 
-        <View
-            android:id="@+id/speak_front"
-            android:layout_width="wrap_content"
-            android:layout_height="10dp"
-            android:layout_marginTop="@dimen/ic_speak_back_stroke_width"
-            android:layout_marginStart="@dimen/ic_speak_back_stroke_width"
-            android:layout_marginEnd="@dimen/ic_speak_back_stroke_width"
-            android:background="@drawable/ic_speak_front"
-            android:layout_gravity="top" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/left_main_button_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/left_main_button_background"/>
 
-    <ImageView
+
+        <LinearLayout
+            android:id="@+id/left_main_button_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="bottom|left">
+
+            <View
+                android:id="@+id/speak_front"
+                android:layout_width="wrap_content"
+                android:layout_height="10dp"
+                android:layout_marginTop="@dimen/ic_speak_back_stroke_width"
+                android:layout_marginStart="@dimen/ic_speak_back_stroke_width"
+                android:layout_marginEnd="@dimen/ic_speak_back_stroke_width"
+                android:background="@drawable/ic_speak_front"
+                android:layout_gravity="top" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/right_main_button"
         android:layout_width="@dimen/main_button_diameter"
         android:layout_height="@dimen/main_button_diameter"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/right_main_button_background"/>
+        android:layout_alignParentEnd="true">
 
-    <View
-        android:id="@+id/right_main_button_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/ic_camera" />
+        <ImageView
+            android:id="@+id/right_main_button_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/right_main_button_background"/>
+
+        <View
+            android:id="@+id/right_main_button_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="bottom|right"
+            android:background="@drawable/ic_camera" />
+    </FrameLayout>
 
 </merge>
