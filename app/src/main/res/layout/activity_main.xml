@@ -7,10 +7,10 @@
     android:background="@android:color/white"
     tools:context="com.example.sasha.okhear.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/contacts_recycler_view"
+    <FrameLayout
+        android:id="@+id/main_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <com.example.sasha.okhear.Overlay_
         android:id="@+id/overlay"

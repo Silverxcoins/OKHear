@@ -1,7 +1,6 @@
 package com.example.sasha.okhear;
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -54,6 +53,12 @@ public class Overlay extends RelativeLayout {
     @ViewById(R.id.right_main_button_background)
     ImageView rightMainButtonBackground;
 
+    @ViewById(R.id.status_bar_background)
+    View statusBarBackground;
+
+    @ViewById(R.id.search_bar_with_status_background)
+    LinearLayout searchBarWithStatusBackground;
+
     @DrawableRes(R.drawable.ic_hand)
     Drawable handIcon;
 
@@ -91,6 +96,8 @@ public class Overlay extends RelativeLayout {
 
     @AfterViews
     void init() {
+        statusBarBackground.getLayoutParams().height = StatusBarUtils.getStatusBarHeight(getContext());
+        statusBarBackground.invalidate();
         preferences.setSpeakOrShow(Preferences.SPEAK);
         setSpeakOrShow();
     }
@@ -103,27 +110,45 @@ public class Overlay extends RelativeLayout {
         startColorAnimation();
     }
 
-    public void hideControls() {
-        showSearchBar(false);
+    @Click(R.id.right_main_button)
+    void onClickRightButton() {
+        if (!getMainActivity().isCameraFragmentActive()) {
+            getMainActivity().setCameraFragment();
+            startSlideSearchBarAnimation(true);
+        } else {
+            getMainActivity().onBackPressed();
+        }
     }
 
-    public void showControls() {
-        showSearchBar(true);
+    public void startSlideSearchBarAnimation(boolean down) {
+        ValueAnimator slideSearchBarAnimator = (down ? ValueAnimator.ofInt(0, getBottom()) : ValueAnimator.ofInt(getBottom(), 0));
+        slideSearchBarAnimator.setDuration(500);
+        slideSearchBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int value = (Integer) valueAnimator.getAnimatedValue();
+                searchBarWithStatusBackground.setY(value);
+            }
+        });
+        if (down) {
+            slideSearchBarAnimator.setStartDelay(50);
+        }
+        slideSearchBarAnimator.start();
     }
 
-    private void showSearchBar(boolean show) {
+    public void showControls(boolean show) {
         if (show == controlsHidden) {
             controlsHidden = !controlsHidden;
 
-            int startSearchBarValue = (int) searchBar.getTranslationY();
-            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight);
+            int startSearchBarValue = (int) searchBarWithStatusBackground.getTranslationY();
+            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight - StatusBarUtils.getStatusBarHeight(getContext()));
             ValueAnimator searchBarAnimator = ValueAnimator.ofInt(startSearchBarValue, endSearchBarValue);
             searchBarAnimator.setDuration(400);
             searchBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     int value = (Integer) valueAnimator.getAnimatedValue();
-                    searchBar.setTranslationY(value);
+                    searchBarWithStatusBackground.setTranslationY(value);
                 }
             });
             searchBarAnimator.start();
@@ -196,11 +221,15 @@ public class Overlay extends RelativeLayout {
     }
 
     private void setMainColor(int color) {
+        statusBarBackground.setBackgroundColor(color);
         searchBarBackground.setColorFilter(color);
         overlayBottomLine.setBackgroundColor(color);
         leftMainButtonBackground.setColorFilter(color);
         rightMainButtonBackground.setColorFilter(color);
-        StatusBarUtils.setStatusBarColor((Activity) getContext(), color);
-        ((MainActivity) getContext()).setCallButtonsColor(color);
+        ((MainActivity_) getContext()).setCallButtonsColor(color);
+    }
+
+    private MainActivity_ getMainActivity() {
+        return (MainActivity_) getContext();
     }
 }
