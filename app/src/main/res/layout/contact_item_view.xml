@@ -43,12 +43,12 @@
         android:layout_alignParentBottom="true"/>
 
 
-    <View
+    <ImageView
+        android:id="@+id/call_button"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="24dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/ic_call"
-        android:backgroundTint="@color/colorPrimaryShow"/>
+        android:src="@drawable/ic_call" />
 </RelativeLayout>

@@ -35,7 +35,7 @@ public class ContactsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ContactItem contact = dataSource.getContact(position);
-//        ((ContactItemViewHolder) holder).bind(item);
+        ((ContactItemViewHolder) holder).bind(contact, activity);
     }
 
     @Override

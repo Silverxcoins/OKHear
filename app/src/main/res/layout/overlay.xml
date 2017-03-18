@@ -2,11 +2,18 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <FrameLayout
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/search_bar_height"
-        android:background="@drawable/search_bar_background">
+        android:layout_height="@dimen/search_bar_height">
+
+        <ImageView
+            android:id="@+id/search_bar_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/search_bar_background"/>
 
         <EditText
+            android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -26,6 +33,7 @@
             android:background="@drawable/avatar_shape"/>
 
         <View
+            android:id="@+id/add_contact_button"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center_vertical|end"
@@ -34,17 +42,17 @@
     </FrameLayout>
 
     <View
+        android:id="@+id/overlay_bottom_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_strip_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimaryShow"/>
+        android:layout_alignParentBottom="true" />
 
-    <View
+    <ImageView
         android:id="@+id/left_main_button"
         android:layout_width="@dimen/main_button_diameter"
         android:layout_height="@dimen/main_button_diameter"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/left_main_button_background"/>
+        android:src="@drawable/left_main_button_background"/>
 
 
     <LinearLayout
@@ -53,10 +61,10 @@
         android:layout_height="32dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/ic_speak_back">
+        android:layout_alignParentBottom="true">
 
         <View
+            android:id="@+id/speak_front"
             android:layout_width="wrap_content"
             android:layout_height="10dp"
             android:layout_marginTop="@dimen/ic_speak_back_stroke_width"
@@ -66,13 +74,13 @@
             android:layout_gravity="top" />
     </LinearLayout>
 
-    <View
+    <ImageView
         android:id="@+id/right_main_button"
         android:layout_width="@dimen/main_button_diameter"
         android:layout_height="@dimen/main_button_diameter"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/right_main_button_background"/>
+        android:src="@drawable/right_main_button_background"/>
 
     <View
         android:id="@+id/right_main_button_icon"
@@ -82,7 +90,6 @@
         android:layout_marginBottom="8dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/ic_camera"
-        android:backgroundTint="@android:color/white"/>
+        android:background="@drawable/ic_camera" />
 
 </merge>
