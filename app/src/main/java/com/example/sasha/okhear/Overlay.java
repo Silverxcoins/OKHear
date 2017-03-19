@@ -20,6 +20,9 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EViewGroup
 public class Overlay extends RelativeLayout {
 
@@ -102,12 +105,11 @@ public class Overlay extends RelativeLayout {
 
     @Click(R.id.right_main_button)
     void onClickRightButton() {
-        if (!getMainActivity().isCameraFragmentActive()) {
-            getMainActivity().setCameraFragment();
+        if (!getMainActivity().isCameraScreenActive()) {
+            getMainActivity().setCameraScreen(true);
             startCameraDownAnimations();
         } else {
-            getMainActivity().setsCameraFragmentActive(false);
-            getMainActivity().onBackPressed();
+            getMainActivity().setCameraScreen(false);
             startCameraUpAnimations();
         }
     }
@@ -117,9 +119,9 @@ public class Overlay extends RelativeLayout {
         startSlideSearchBarAnimation(false);
     }
 
-    public void startSlideSearchBarAnimation(boolean down) {
+    public void startSlideSearchBarAnimation(final boolean down) {
         ValueAnimator slideSearchBarAnimator = (down ? ValueAnimator.ofInt(0, getBottom()) : ValueAnimator.ofInt(getBottom(), 0));
-        slideSearchBarAnimator.setDuration(500);
+        slideSearchBarAnimator.setDuration(400);
         slideSearchBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -127,9 +129,6 @@ public class Overlay extends RelativeLayout {
                 searchBarWithStatusBackground.setY(value);
             }
         });
-        if (down) {
-            slideSearchBarAnimator.setStartDelay(50);
-        }
         slideSearchBarAnimator.start();
     }
 
@@ -218,14 +217,18 @@ public class Overlay extends RelativeLayout {
         setMainColor(speakOrShow == Preferences.SPEAK ? primarySpeakColor : primaryShowColor);
     }
 
-    private @DrawableRes int getLeftButtonIconRes() {
+    private
+    @DrawableRes
+    int getLeftButtonIconRes() {
         int speakOrShow = preferences.getSpeakOrShow();
         return (speakOrShow == Preferences.SPEAK ? R.drawable.ic_speak : R.drawable.ic_hand);
     }
 
-    private @DrawableRes int getRightButtonIconRes() {
-        boolean isCameraFragmentActive = getMainActivity().isCameraFragmentActive();
-        return (isCameraFragmentActive ? R.drawable.ic_contacts : R.drawable.ic_camera);
+    private
+    @DrawableRes
+    int getRightButtonIconRes() {
+        boolean isCameraScreenActive = getMainActivity().isCameraScreenActive();
+        return (isCameraScreenActive ? R.drawable.ic_contacts : R.drawable.ic_camera);
     }
 
     private void setMainColor(int color) {
@@ -240,4 +243,5 @@ public class Overlay extends RelativeLayout {
     private MainActivity_ getMainActivity() {
         return (MainActivity_) getContext();
     }
+
 }

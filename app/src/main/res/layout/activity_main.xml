@@ -12,6 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <com.example.sasha.okhear.camera.CameraScreen_
+        android:id="@+id/camera_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+        <include layout="@layout/screen_camera"/>
+    </com.example.sasha.okhear.camera.CameraScreen_>
+
     <com.example.sasha.okhear.Overlay_
         android:id="@+id/overlay"
         android:layout_width="match_parent"

@@ -1,12 +1,17 @@
 package com.example.sasha.okhear;
 
+import android.animation.ValueAnimator;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 
+import com.example.sasha.okhear.camera.CameraScreen_;
+import com.example.sasha.okhear.camera.CameraScreen;
 import com.example.sasha.okhear.utils.Preferences;
 import com.example.sasha.okhear.utils.StatusBarUtils;
-import com.example.sasha.okhear.camera.CameraFragment_;
 import com.example.sasha.okhear.contacts.ContactsFragment_;
+import com.example.sasha.okhear.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -22,15 +27,18 @@ public class MainActivity extends AppCompatActivity {
     @ViewById(R.id.overlay)
     Overlay_ overlay;
 
-    private ContactsFragment_ contactsFragment = new ContactsFragment_();
-    private CameraFragment_ cameraFragment = new CameraFragment_();
+    CameraScreen_ cameraScreen;
 
-    private volatile boolean cameraFragmentActive = false;
+    private ContactsFragment_ contactsFragment = new ContactsFragment_();
+
+    private volatile boolean cameraScreenActive = false;
 
     @AfterViews
     protected void init() {
+        cameraScreen = (CameraScreen_) findViewById(R.id.camera_screen);
         StatusBarUtils.setupFullscreenActivity(this);
         contactsFragment.setOverlay(overlay);
+        cameraScreen.setOverlay(overlay);
         setContactsFragment();
     }
 
@@ -40,34 +48,37 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    public void setCameraFragment() {
-        cameraFragmentActive = true;
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_down_anim, R.anim.disappear_anim, R.anim.appear_anim, R.anim.slide_up_anim);
-        ft.replace(R.id.main_fragment_container, cameraFragment);
-        ft.addToBackStack(null);
-        ft.commit();
-        StatusBarUtils.setupFullscreenActivity(this);
+    public void setCameraScreen(boolean set) {
+        Utils.setVisibility(cameraScreen, true);
+        this.cameraScreenActive = set;
+        int height = cameraScreen.getHeight();
+        ValueAnimator animator = (set ? ValueAnimator.ofInt(0 - height, 0) : ValueAnimator.ofInt(0, 0 - height));
+        animator.setDuration(400);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int value = (int) valueAnimator.getAnimatedValue();
+                cameraScreen.setTranslationY(value);
+            }
+        });
+        animator.start();
     }
 
     public void setCallButtonsColor(int color) {
         contactsFragment.setCallButtonsColor(color);
     }
 
-    public boolean isCameraFragmentActive() {
-        return cameraFragmentActive;
-    }
-
-    public void setsCameraFragmentActive(boolean cameraFragmentActive) {
-        this.cameraFragmentActive = cameraFragmentActive;
+    public boolean isCameraScreenActive() {
+        return cameraScreenActive;
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (cameraFragmentActive) {
-            cameraFragmentActive = false;
+        if (cameraScreenActive) {
+            setCameraScreen(false);
             overlay.startCameraUpAnimations();
+        } else {
+            super.onBackPressed();
         }
     }
 }
