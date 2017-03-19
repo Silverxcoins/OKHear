@@ -36,7 +36,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/contacts_strip_height"
+        android:layout_height="0.5dp"
         android:background="@color/contactStripColor"
         android:layout_marginStart="@dimen/contact_strip_margin_start"
         android:layout_marginEnd="@dimen/contact_strip_margin_end"

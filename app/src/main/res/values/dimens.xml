@@ -28,5 +28,4 @@
     <dimen name="call_button_margin_end">24dp</dimen>
     <dimen name="overlay_button_diameter">32dp</dimen>
     <dimen name="main_buttons_icons_margin">8dp</dimen>
-    <item name="contacts_strip_height" type="dimen" format="float">0.5dp</item>
 </resources>

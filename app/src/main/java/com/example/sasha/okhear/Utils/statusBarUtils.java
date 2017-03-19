@@ -1,4 +1,4 @@
-package com.example.sasha.okhear.Utils;
+package com.example.sasha.okhear.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,10 +6,6 @@ import android.graphics.Color;
 import android.view.View;
 
 public class StatusBarUtils {
-
-    public static void setStatusBarColor(Activity activity, int color) {
-        activity.getWindow().setStatusBarColor(color);
-    }
 
     public static void hideStatusBar(Activity activity) {
         View decorView = activity.getWindow().getDecorView();
@@ -25,6 +21,10 @@ public class StatusBarUtils {
 
     public static int getStatusBarHeight(Context context) {
         return (int) Math.ceil(25 * context.getResources().getDisplayMetrics().density);
+    }
+
+    private static void setStatusBarColor(Activity activity, int color) {
+        activity.getWindow().setStatusBarColor(color);
     }
 
 }
