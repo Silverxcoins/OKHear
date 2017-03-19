@@ -8,8 +8,9 @@ import com.example.sasha.okhear.R;
 
 public class ContactsAdapter extends RecyclerView.Adapter {
 
-    private final int EMPTY_CONTACT_ITEM_VIEW = 1;
-    private final int CONTACT_ITEM_VIEW = 2;
+    public static final int FIRST_EMPTY_CONTACT_ITEM_VIEW = 0;
+    public static final int LAST_EMPTY_CONTACT_ITEM_VIEW = 1;
+    public static final int CONTACT_ITEM_VIEW = 2;
 
     private final Activity activity;
     private final ContactsDataSource dataSource;
@@ -45,7 +46,13 @@ public class ContactsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return (position != 0 && position != dataSource.getCount() - 1) ? CONTACT_ITEM_VIEW : EMPTY_CONTACT_ITEM_VIEW;
+        if (position == 0) {
+            return FIRST_EMPTY_CONTACT_ITEM_VIEW;
+        } else if (position == dataSource.getCount() - 1) {
+            return LAST_EMPTY_CONTACT_ITEM_VIEW;
+        } else {
+            return CONTACT_ITEM_VIEW;
+        }
     }
 
 }

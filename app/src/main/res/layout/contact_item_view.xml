@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="@dimen/contact_item_view_height">
 
     <FrameLayout
         android:id="@+id/contact_avatar_container"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp">
+        android:layout_width="@dimen/contact_avatar_diameter"
+        android:layout_height="@dimen/contact_avatar_diameter"
+        android:layout_marginStart="@dimen/contact_avatar_margin_start"
+        android:layout_marginTop="@dimen/contact_avatar_margin_top">
 
         <ImageView
             android:id="@+id/contact_avatar"
@@ -29,26 +29,26 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/contact_avatar_container"
         android:layout_centerInParent="true"
-        android:layout_marginStart="16dp"
-        android:textSize="16sp"
+        android:layout_marginStart="@dimen/contact_name_margin_start"
+        android:textSize="@dimen/contact_name_text_size"
         android:fontFamily="sans-serif-medium"
         android:text="Иван Иванов"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#22000000"
-        android:layout_marginStart="88dp"
-        android:layout_marginEnd="16dp"
+        android:layout_height="@dimen/contacts_strip_height"
+        android:background="@color/contactStripColor"
+        android:layout_marginStart="@dimen/contact_strip_margin_start"
+        android:layout_marginEnd="@dimen/contact_strip_margin_end"
         android:layout_alignParentBottom="true"/>
 
 
     <ImageView
         android:id="@+id/call_button"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/call_button_diameter"
+        android:layout_height="@dimen/call_button_diameter"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="24dp"
+        android:layout_marginEnd="@dimen/call_button_margin_end"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_call" />
 </RelativeLayout>

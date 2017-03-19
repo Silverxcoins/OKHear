@@ -7,11 +7,11 @@ import android.view.View;
 
 import com.example.sasha.okhear.Overlay_;
 import com.example.sasha.okhear.R;
-import com.example.sasha.okhear.Utils.Preferences;
 import com.example.sasha.okhear.contacts.contacts_recycler_view.ContactItem;
 import com.example.sasha.okhear.contacts.contacts_recycler_view.ContactItemViewHolder;
 import com.example.sasha.okhear.contacts.contacts_recycler_view.ContactsAdapter;
 import com.example.sasha.okhear.contacts.contacts_recycler_view.ContactsDataSource;
+import com.example.sasha.okhear.utils.Preferences;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;

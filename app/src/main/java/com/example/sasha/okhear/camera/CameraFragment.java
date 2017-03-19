@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.example.sasha.okhear.Overlay_;
 import com.example.sasha.okhear.R;
-import com.example.sasha.okhear.Utils.Preferences;
+import com.example.sasha.okhear.utils.Preferences;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;

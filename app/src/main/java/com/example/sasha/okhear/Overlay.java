@@ -2,7 +2,7 @@ package com.example.sasha.okhear;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.example.sasha.okhear.Utils.Preferences;
-import com.example.sasha.okhear.Utils.StatusBarUtils;
-import com.example.sasha.okhear.Utils.Utils;
-
+import com.example.sasha.okhear.utils.Preferences;
+import com.example.sasha.okhear.utils.StatusBarUtils;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
@@ -21,16 +19,12 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
-import org.androidannotations.annotations.res.DrawableRes;
 
 @EViewGroup
 public class Overlay extends RelativeLayout {
 
     @ViewById(R.id.left_main_button_icon)
-    LinearLayout leftButtonIcon;
-
-    @ViewById(R.id.speak_front)
-    View speakIconFront;
+    View leftButtonIcon;
 
     @ViewById(R.id.search_bar)
     FrameLayout searchBar;
@@ -59,11 +53,8 @@ public class Overlay extends RelativeLayout {
     @ViewById(R.id.search_bar_with_status_background)
     LinearLayout searchBarWithStatusBackground;
 
-    @DrawableRes(R.drawable.ic_hand)
-    Drawable handIcon;
-
-    @DrawableRes(R.drawable.ic_speak_back)
-    Drawable speakIconBack;
+    @ViewById(R.id.right_main_button_icon)
+    View rightButtonIcon;
 
     @DimensionPixelSizeRes(R.dimen.search_bar_height)
     int searchBarHeight;
@@ -105,8 +96,7 @@ public class Overlay extends RelativeLayout {
     @Click(R.id.left_main_button)
     void onClickLeftButton() {
         preferences.changeSpeakOrShow();
-        leftButtonIcon.setEnabled(false);
-        startRotateAnimation();
+        startRotateAnimation(leftMainButton, leftButtonIcon, getLeftButtonIconRes());
         startColorAnimation();
     }
 
@@ -114,10 +104,17 @@ public class Overlay extends RelativeLayout {
     void onClickRightButton() {
         if (!getMainActivity().isCameraFragmentActive()) {
             getMainActivity().setCameraFragment();
-            startSlideSearchBarAnimation(true);
+            startCameraDownAnimations();
         } else {
+            getMainActivity().setsCameraFragmentActive(false);
             getMainActivity().onBackPressed();
+            startCameraUpAnimations();
         }
+    }
+
+    public void startCameraUpAnimations() {
+        startRotateAnimation(rightMainButton, rightButtonIcon, getRightButtonIconRes());
+        startSlideSearchBarAnimation(false);
     }
 
     public void startSlideSearchBarAnimation(boolean down) {
@@ -151,7 +148,6 @@ public class Overlay extends RelativeLayout {
                     searchBarWithStatusBackground.setTranslationY(value);
                 }
             });
-            searchBarAnimator.start();
 
             int startMainButtonsValue = (int) leftMainButton.getTranslationX();
             int endMainButtonsValue = (show ? 0 : 0 - mainButtonDiameter);
@@ -167,11 +163,19 @@ public class Overlay extends RelativeLayout {
                     rightMainButton.setTranslationY(0 - value);
                 }
             });
+
+            searchBarAnimator.start();
             mainButtonsAnimator.start();
         }
     }
 
-    private void startRotateAnimation() {
+    private void startCameraDownAnimations() {
+        startSlideSearchBarAnimation(true);
+        startRotateAnimation(rightMainButton, rightButtonIcon, getRightButtonIconRes());
+    }
+
+    private void startRotateAnimation(final View button, final View buttonIconView, final @DrawableRes int iconRes) {
+        button.setEnabled(false);
         ValueAnimator rotationAnimator = ValueAnimator.ofFloat(0, 180);
         rotationAnimator.setDuration(500);
         rotationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -179,13 +183,13 @@ public class Overlay extends RelativeLayout {
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float value = (Float) valueAnimator.getAnimatedValue();
                 if (value <= 90) {
-                    leftButtonIcon.setRotationY(value);
+                    buttonIconView.setRotationY(value);
                 } else {
-                    leftButtonIcon.setRotationY(180 - value);
-                    setSpeakOrShowIcon();
+                    buttonIconView.setRotationY(180 - value);
+                    buttonIconView.setBackgroundResource(iconRes);
                 }
                 if (value == 180) {
-                    leftButtonIcon.setEnabled(true);
+                    button.setEnabled(true);
                 }
             }
         });
@@ -210,14 +214,18 @@ public class Overlay extends RelativeLayout {
 
     private void setSpeakOrShow() {
         int speakOrShow = preferences.getSpeakOrShow();
-        setSpeakOrShowIcon();
+        leftButtonIcon.setBackgroundResource(getLeftButtonIconRes());
         setMainColor(speakOrShow == Preferences.SPEAK ? primarySpeakColor : primaryShowColor);
     }
 
-    private void setSpeakOrShowIcon() {
+    private @DrawableRes int getLeftButtonIconRes() {
         int speakOrShow = preferences.getSpeakOrShow();
-        leftButtonIcon.setBackground(speakOrShow == Preferences.SPEAK ? speakIconBack : handIcon);
-        Utils.setVisibility(speakIconFront, speakOrShow == Preferences.SPEAK);
+        return (speakOrShow == Preferences.SPEAK ? R.drawable.ic_speak : R.drawable.ic_hand);
+    }
+
+    private @DrawableRes int getRightButtonIconRes() {
+        boolean isCameraFragmentActive = getMainActivity().isCameraFragmentActive();
+        return (isCameraFragmentActive ? R.drawable.ic_contacts : R.drawable.ic_camera);
     }
 
     private void setMainColor(int color) {

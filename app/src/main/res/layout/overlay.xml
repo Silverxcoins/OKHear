@@ -45,8 +45,8 @@
 
             <View
                 android:id="@+id/add_contact_button"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="@dimen/overlay_button_diameter"
+                android:layout_height="@dimen/overlay_button_diameter"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="@dimen/search_bar_button_margin_horizontal"
                 android:background="@drawable/ic_add_contact"/>
@@ -72,24 +72,13 @@
             android:src="@drawable/left_main_button_background"/>
 
 
-        <LinearLayout
+        <View
             android:id="@+id/left_main_button_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="bottom|left">
-
-            <View
-                android:id="@+id/speak_front"
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                android:layout_marginTop="@dimen/ic_speak_back_stroke_width"
-                android:layout_marginStart="@dimen/ic_speak_back_stroke_width"
-                android:layout_marginEnd="@dimen/ic_speak_back_stroke_width"
-                android:background="@drawable/ic_speak_front"
-                android:layout_gravity="top" />
-        </LinearLayout>
+            android:layout_width="@dimen/overlay_button_diameter"
+            android:layout_height="@dimen/overlay_button_diameter"
+            android:layout_marginStart="@dimen/main_buttons_icons_margin"
+            android:layout_marginBottom="@dimen/main_buttons_icons_margin"
+            android:layout_gravity="bottom|start"/>
     </FrameLayout>
 
     <FrameLayout
@@ -107,11 +96,11 @@
 
         <View
             android:id="@+id/right_main_button_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="bottom|right"
+            android:layout_width="@dimen/overlay_button_diameter"
+            android:layout_height="@dimen/overlay_button_diameter"
+            android:layout_marginEnd="@dimen/main_buttons_icons_margin"
+            android:layout_marginBottom="@dimen/main_buttons_icons_margin"
+            android:layout_gravity="bottom|end"
             android:background="@drawable/ic_camera" />
     </FrameLayout>
 

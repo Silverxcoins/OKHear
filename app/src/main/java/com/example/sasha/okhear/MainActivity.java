@@ -3,8 +3,8 @@ package com.example.sasha.okhear;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.sasha.okhear.Utils.Preferences;
-import com.example.sasha.okhear.Utils.StatusBarUtils;
+import com.example.sasha.okhear.utils.Preferences;
+import com.example.sasha.okhear.utils.StatusBarUtils;
 import com.example.sasha.okhear.camera.CameraFragment_;
 import com.example.sasha.okhear.contacts.ContactsFragment_;
 
@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
     @ViewById(R.id.overlay)
     Overlay_ overlay;
 
-    ContactsFragment_ contactsFragment = new ContactsFragment_();
-    CameraFragment_ cameraFragment = new CameraFragment_();
+    private ContactsFragment_ contactsFragment = new ContactsFragment_();
+    private CameraFragment_ cameraFragment = new CameraFragment_();
 
-    boolean cameraFragmentActive = false;
+    private volatile boolean cameraFragmentActive = false;
 
     @AfterViews
     protected void init() {
@@ -58,12 +58,16 @@ public class MainActivity extends AppCompatActivity {
         return cameraFragmentActive;
     }
 
+    public void setsCameraFragmentActive(boolean cameraFragmentActive) {
+        this.cameraFragmentActive = cameraFragmentActive;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         if (cameraFragmentActive) {
             cameraFragmentActive = false;
-            overlay.startSlideSearchBarAnimation(false);
+            overlay.startCameraUpAnimations();
         }
     }
 }

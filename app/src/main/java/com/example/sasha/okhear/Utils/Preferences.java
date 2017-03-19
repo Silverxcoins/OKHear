@@ -1,4 +1,4 @@
-package com.example.sasha.okhear.Utils;
+package com.example.sasha.okhear.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

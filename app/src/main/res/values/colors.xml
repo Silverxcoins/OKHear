@@ -2,4 +2,7 @@
 <resources>
     <color name="colorPrimaryShow">#28aafc</color>
     <color name="colorPrimarySpeak">#FF8A65</color>
+    <color name="avatarBotderColor">#33000000</color>
+    <color name="searchFieldBackgroundColor">#BBFFFFFF</color>
+    <color name="contactStripColor">#22000000</color>
 </resources>
