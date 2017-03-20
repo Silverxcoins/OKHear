@@ -99,6 +99,10 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                 camera.setDisplayOrientation(90);
                 cameraView.getLayoutParams().height = previewSurfaceHeight;
                 cameraView.getLayoutParams().width = (int) (previewSurfaceHeight / aspect);
+
+                Camera.Parameters params = camera.getParameters();
+                params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                camera.setParameters(params);
                 camera.startPreview();
             }
 
@@ -125,7 +129,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
             imagesServerCommunication.setCallback(this);
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
-                public void onPreviewFrame(byte[] bytes, Camera camera) {
+                public void onPreviewFrame(byte[] bytes, final Camera camera) {
                     if (timer == null || timerFinished.get()) {
                         imagesServerCommunication.sendToServer(camera, bytes, iv);
 
