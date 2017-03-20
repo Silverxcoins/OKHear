@@ -44,8 +44,7 @@ public class Http {
                 .build();
         try {
             Response response = OK_HTTP_CLIENT.newCall(request).execute();
-            Log.d("!!!", " " + response.body().string());
-            return null;
+            return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

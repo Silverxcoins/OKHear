@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.sasha.okhear.Overlay_;
 import com.example.sasha.okhear.R;
@@ -25,6 +26,8 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,7 +45,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     View startButton;
 
     @ViewById(R.id.start_text)
-    View startText;
+    TextView startText;
 
     @ViewById(R.id.iv)
     ImageView iv;
@@ -124,7 +127,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                 @Override
                 public void onPreviewFrame(byte[] bytes, Camera camera) {
                     if (timer == null || timerFinished.get()) {
-                        imagesServerCommunication.sendToServer(Utils.convertToJpeg(camera, bytes, iv));
+                        imagesServerCommunication.sendToServer(camera, bytes, iv);
 
                         if (timer == null) {
                             timer = new Timer();
@@ -134,7 +137,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                             public void run() {
                                 timerFinished.set(true);
                             }
-                        }, 500);
+                        }, 1000);
                         timerFinished.set(false);
                     }
 
@@ -166,10 +169,10 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     private void startStartButtonAnimation() {
         ValueAnimator animator;
         if (!startClicked) {
-            Utils.setVisibility(startText, false);
+            startText.setText("");
             animator = ValueAnimator.ofFloat(1, 5);
         } else {
-            Utils.setVisibility(startText, true);
+            startText.setText("Start");
             animator = ValueAnimator.ofFloat(5, 1);
         }
         animator.setDuration(400);
@@ -186,6 +189,11 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
 
     @Override
     public void onResponse(String response) {
-
+        try {
+            JSONObject json = new JSONObject(response);
+            startText.setText(String.valueOf(json.get("gesture")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

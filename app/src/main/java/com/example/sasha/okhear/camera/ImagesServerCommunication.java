@@ -1,6 +1,10 @@
 package com.example.sasha.okhear.camera;
 
+import android.hardware.Camera;
+import android.widget.ImageView;
+
 import com.example.sasha.okhear.utils.Http;
+import com.example.sasha.okhear.utils.Utils;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
@@ -23,18 +27,19 @@ public class ImagesServerCommunication {
         this.callback = callback;
     }
 
-    public void sendToServer(final byte[] bytes) {
+    public void sendToServer(final Camera camera, final byte[] bytes, final ImageView iv) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                String response = sendToServerInternal(bytes);
+                String response = sendToServerInternal(camera, bytes, iv);
                 notifyGetResponse(response);
             }
         });
     }
 
-    private String sendToServerInternal(byte[] bytes) {
-        return Http.sendMultiPartPostRequest("", bytes);
+    private String sendToServerInternal(Camera camera, byte[] bytes, ImageView iv) {
+        byte[] jpegBytes = Utils.convertToJpeg(camera, bytes, iv);
+        return Http.sendMultiPartPostRequest("", jpegBytes);
     }
 
     @UiThread
