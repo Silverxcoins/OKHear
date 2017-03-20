@@ -27,18 +27,18 @@ public class ImagesServerCommunication {
         this.callback = callback;
     }
 
-    public void sendToServer(final Camera camera, final byte[] bytes, final ImageView iv) {
+    public void sendToServer(final Camera camera, final byte[] bytes) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                String response = sendToServerInternal(camera, bytes, iv);
+                String response = sendToServerInternal(camera, bytes);
                 notifyGetResponse(response);
             }
         });
     }
 
-    private String sendToServerInternal(Camera camera, byte[] bytes, ImageView iv) {
-        byte[] jpegBytes = Utils.convertToJpeg(camera, bytes, iv);
+    private String sendToServerInternal(Camera camera, byte[] bytes) {
+        byte[] jpegBytes = Utils.convertToJpeg(camera, bytes, null);
         return Http.sendMultiPartPostRequest("", jpegBytes);
     }
 

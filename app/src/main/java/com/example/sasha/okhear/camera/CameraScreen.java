@@ -61,7 +61,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     private Timer timer;
 
     private volatile boolean startClicked = false;
-    AtomicBoolean timerFinished = new AtomicBoolean(false);
+    AtomicBoolean readyToSend = new AtomicBoolean(true);
 
     public CameraScreen(Context context) {
         super(context);
@@ -130,39 +130,22 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
-                    if (timer == null || timerFinished.get()) {
-                        imagesServerCommunication.sendToServer(camera, bytes, iv);
-
+                    if (timer == null || readyToSend.get()) {
+                        readyToSend.set(false);
                         if (timer == null) {
                             timer = new Timer();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    readyToSend.set(true);
+                                }
+                            }, 500);
                         }
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                timerFinished.set(true);
-                            }
-                        }, 1000);
-                        timerFinished.set(false);
+                        imagesServerCommunication.sendToServer(camera, bytes);
                     }
-
-                    ////////////
-//                    Camera.Parameters params = camera.getParameters();
-//                    int w = params.getPreviewSize().width;
-//                    int h = params.getPreviewSize().height;
-//                    int format = params.getPreviewFormat();
-//                    YuvImage image = new YuvImage(bytes, format, w, h, null);
-//
-//                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-//                    Rect area = new Rect(0, 0, w, h);
-//                    image.compressToJpeg(area, 100, out);
-//                    Bitmap bm = BitmapFactory.decodeByteArray(out.toByteArray(), 0, out.size());
-//                    iv.setImageBitmap(Utils.RotateBitmap(bm));
-                    ////////////
                 }
             });
         } else {
-            timer.cancel();
-            timer = null;
             camera.setOneShotPreviewCallback(null);
             imagesServerCommunication.setCallback(null);
         }
@@ -194,6 +177,8 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     @Override
     public void onResponse(String response) {
         try {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!");
+            readyToSend.set(true);
             JSONObject json = new JSONObject(response);
             startText.setText(String.valueOf(json.get("gesture")));
         } catch (JSONException e) {
