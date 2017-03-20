@@ -58,7 +58,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     private SurfaceHolder surfaceHolder;
     private Camera camera;
 
-    private Timer timer;
+    private Timer timer = new Timer();
 
     private volatile boolean startClicked = false;
     AtomicBoolean readyToSend = new AtomicBoolean(true);
@@ -130,17 +130,8 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
-                    if (timer == null || readyToSend.get()) {
+                    if (readyToSend.get()) {
                         readyToSend.set(false);
-                        if (timer == null) {
-                            timer = new Timer();
-                            timer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    readyToSend.set(true);
-                                }
-                            }, 500);
-                        }
                         imagesServerCommunication.sendToServer(camera, bytes);
                     }
                 }
@@ -177,8 +168,12 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     @Override
     public void onResponse(String response) {
         try {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!");
-            readyToSend.set(true);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    readyToSend.set(true);
+                }
+            }, 400);
             JSONObject json = new JSONObject(response);
             startText.setText(String.valueOf(json.get("gesture")));
         } catch (JSONException e) {
