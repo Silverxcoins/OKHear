@@ -1,5 +1,6 @@
 package com.example.sasha.okhear;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         StatusBarUtils.setupFullscreenActivity(this);
         contactsFragment.setOverlay(overlay);
         cameraScreen.setOverlay(overlay);
+        overlay.setCameraScreen(cameraScreen);
         setContactsFragment();
     }
 
@@ -48,11 +50,13 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    public void setCameraScreen(boolean set) {
+    public void setCameraScreen(final boolean set) {
         Utils.setVisibility(cameraScreen, true);
         this.cameraScreenActive = set;
-        int height = cameraScreen.getHeight();
-        ValueAnimator animator = (set ? ValueAnimator.ofInt(0 - height, 0) : ValueAnimator.ofInt(0, 0 - height));
+        final int height = cameraScreen.getHeight();
+        final int startValue = set ? 0 - height : 0;
+        final int endValue = set ? 0 : 0 - height;
+        ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
         animator.setDuration(400);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -61,12 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 cameraScreen.setTranslationY(value);
             }
         });
+        cameraScreen.onShowCamera(set);
         animator.start();
-        if (set) {
-            cameraScreen.onShowCamera();
-        } else {
-            cameraScreen.onCloseCamera();
-        }
     }
 
     public void setCallButtonsColor(int color) {
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (cameraScreenActive) {
             setCameraScreen(false);
-            overlay.startCameraUpAnimations();
+            overlay.startCameraDownAnimations(false);
         } else {
             super.onBackPressed();
         }

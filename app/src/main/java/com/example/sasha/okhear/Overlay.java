@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.example.sasha.okhear.camera.CameraScreen_;
 import com.example.sasha.okhear.utils.Preferences;
 import com.example.sasha.okhear.utils.StatusBarUtils;
 import org.androidannotations.annotations.AfterViews;
@@ -71,6 +72,8 @@ public class Overlay extends RelativeLayout {
     @Bean
     Preferences preferences;
 
+    private CameraScreen_ cameraScreen;
+
     private volatile boolean controlsHidden = false;
 
     public Overlay(Context context) {
@@ -104,16 +107,23 @@ public class Overlay extends RelativeLayout {
     void onClickRightButton() {
         if (!getMainActivity().isCameraScreenActive()) {
             getMainActivity().setCameraScreen(true);
-            startCameraDownAnimations();
+            startCameraDownAnimations(true);
+            leftMainButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cameraScreen.swapCamera();
+                }
+            });
         } else {
             getMainActivity().setCameraScreen(false);
-            startCameraUpAnimations();
+            startCameraDownAnimations(false);
+            leftMainButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickLeftButton();
+                }
+            });
         }
-    }
-
-    public void startCameraUpAnimations() {
-        startRotateAnimation(rightMainButton, rightButtonIcon, getRightButtonIconRes());
-        startSlideSearchBarAnimation(false);
     }
 
     public void startSlideSearchBarAnimation(final boolean down) {
@@ -165,8 +175,13 @@ public class Overlay extends RelativeLayout {
         }
     }
 
-    private void startCameraDownAnimations() {
-        startSlideSearchBarAnimation(true);
+    public void setCameraScreen(CameraScreen_ cameraScreen) {
+        this.cameraScreen = cameraScreen;
+    }
+
+    public void startCameraDownAnimations(boolean down) {
+        startSlideSearchBarAnimation(down);
+        startRotateAnimation(leftMainButton, leftButtonIcon, getLeftButtonIconRes());
         startRotateAnimation(rightMainButton, rightButtonIcon, getRightButtonIconRes());
     }
 
@@ -217,8 +232,12 @@ public class Overlay extends RelativeLayout {
     private
     @DrawableRes
     int getLeftButtonIconRes() {
-        int speakOrShow = preferences.getSpeakOrShow();
-        return (speakOrShow == Preferences.SPEAK ? R.drawable.ic_speak : R.drawable.ic_hand);
+         if (!getMainActivity().isCameraScreenActive()) {
+             int speakOrShow = preferences.getSpeakOrShow();
+             return (speakOrShow == Preferences.SPEAK ? R.drawable.ic_speak : R.drawable.ic_hand);
+         } else {
+             return R.drawable.ic_swap;
+         }
     }
 
     private

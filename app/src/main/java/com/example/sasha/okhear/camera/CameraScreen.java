@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -50,14 +49,9 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
 
     private SurfaceHolder surfaceHolder;
     private Camera camera;
+    private int cameraId;
 
     private Timer timer = new Timer();
-    private TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            readyToSend.set(true);
-        }
-    };
 
     private volatile boolean startClicked = false;
     AtomicBoolean readyToSend = new AtomicBoolean(true);
@@ -87,6 +81,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                 if (camera == null) {
                     camera = Camera.open();
                 }
+                cameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
                 try {
                     camera.setPreviewDisplay(holder);
                 } catch (IOException e) {
@@ -123,8 +118,13 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
 
     @Click(R.id.start_button)
     void onStartButtonClick() {
-        Log.d("!!!", "onStartButtonClick: " + startClicked);
-        if (!startClicked) {
+        startSendingFrames(!startClicked);
+        startStartButtonAnimation();
+        startClicked = !startClicked;
+    }
+
+    private void startSendingFrames(boolean start) {
+        if (start) {
             imagesServerCommunication.setCallback(this);
             readyToSend.set(true);
             camera.setPreviewCallback(new Camera.PreviewCallback() {
@@ -136,13 +136,10 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                     }
                 }
             });
-            timer.schedule(timerTask, 400);
         } else {
             camera.setOneShotPreviewCallback(null);
             imagesServerCommunication.setCallback(null);
         }
-        startStartButtonAnimation();
-        startClicked = !startClicked;
     }
 
     private void startStartButtonAnimation() {
@@ -169,7 +166,13 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     @Override
     public void onResponse(String response) {
         try {
-            timer.schedule(timerTask, 400);
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    readyToSend.set(true);
+                }
+            }, 400);
             JSONObject json = new JSONObject(response);
             startText.setText(String.valueOf(json.get("gesture")));
         } catch (JSONException e) {
@@ -177,15 +180,50 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         }
     }
 
-    public void onShowCamera() {
-        camera.startPreview();
+    public void onShowCamera(boolean show) {
+        if (show) {
+            camera.startPreview();
+        } else {
+            camera.stopPreview();
+        }
     }
 
-    public void onCloseCamera() {
+    public void swapCamera() {
+        if (startClicked) {
+            startSendingFrames(false);
+        }
         camera.stopPreview();
+        camera.release();
+
+        if(cameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
+            cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+        }
+        else {
+            cameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+        }
+        camera = Camera.open(cameraId);
+
+        setCameraDisplayOrientation();
+        try {
+            camera.setPreviewDisplay(surfaceHolder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        camera.startPreview();
+        if (startClicked) {
+            startSendingFrames(true);
+        }
     }
 
-    private void swapCamera() {
-
+    private void setCameraDisplayOrientation() {
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + 270) % 360;
+            result = (360 - result) % 360;
+        } else {
+            result = (info.orientation + 90) % 360;
+        }
+        camera.setDisplayOrientation(result);
     }
 }
