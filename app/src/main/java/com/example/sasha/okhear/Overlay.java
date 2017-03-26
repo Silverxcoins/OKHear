@@ -144,7 +144,7 @@ public class Overlay extends RelativeLayout {
             controlsHidden = !controlsHidden;
 
             int startSearchBarValue = (int) searchBarWithStatusBackground.getTranslationY();
-            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight - StatusBarUtils.getStatusBarHeight(getContext()));
+            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight //- StatusBarUtils.getStatusBarHeight(getContext()));
             ValueAnimator searchBarAnimator = ValueAnimator.ofInt(startSearchBarValue, endSearchBarValue);
             searchBarAnimator.setDuration(400);
             searchBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
