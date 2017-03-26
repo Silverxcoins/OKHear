@@ -1,16 +1,12 @@
 package com.example.sasha.okhear;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 
 import com.example.sasha.okhear.camera.CameraScreen_;
-import com.example.sasha.okhear.camera.CameraScreen;
 import com.example.sasha.okhear.utils.Preferences;
-import com.example.sasha.okhear.utils.StatusBarUtils;
+import com.example.sasha.okhear.utils.StatusBarUtil;
 import com.example.sasha.okhear.contacts.ContactsFragment_;
 import com.example.sasha.okhear.utils.Utils;
 
@@ -37,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     @AfterViews
     protected void init() {
         cameraScreen = (CameraScreen_) findViewById(R.id.camera_screen);
-        StatusBarUtils.setupFullscreenActivity(this);
+        StatusBarUtil.setupFullscreenActivity(this);
         contactsFragment.setOverlay(overlay);
         cameraScreen.setOverlay(overlay);
         overlay.setCameraScreen(cameraScreen);

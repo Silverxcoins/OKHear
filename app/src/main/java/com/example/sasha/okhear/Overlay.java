@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.example.sasha.okhear.camera.CameraScreen_;
 import com.example.sasha.okhear.utils.Preferences;
-import com.example.sasha.okhear.utils.StatusBarUtils;
+import com.example.sasha.okhear.utils.StatusBarUtil;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
@@ -90,7 +90,7 @@ public class Overlay extends RelativeLayout {
 
     @AfterViews
     void init() {
-        statusBarBackground.getLayoutParams().height = StatusBarUtils.getStatusBarHeight(getContext());
+        statusBarBackground.getLayoutParams().height = StatusBarUtil.getStatusBarHeight(getContext());
         statusBarBackground.invalidate();
         preferences.setSpeakOrShow(Preferences.SPEAK);
         setSpeakOrShow();
@@ -144,7 +144,7 @@ public class Overlay extends RelativeLayout {
             controlsHidden = !controlsHidden;
 
             int startSearchBarValue = (int) searchBarWithStatusBackground.getTranslationY();
-            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight - StatusBarUtils.getStatusBarHeight(getContext()));
+            int endSearchBarValue = (show ? 0 : 0 - searchBarHeight - StatusBarUtil.getStatusBarHeight(getContext()));
             ValueAnimator searchBarAnimator = ValueAnimator.ofInt(startSearchBarValue, endSearchBarValue);
             searchBarAnimator.setDuration(400);
             searchBarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
