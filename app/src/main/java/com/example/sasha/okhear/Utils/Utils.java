@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -30,6 +31,15 @@ public class Utils {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         yuvImage.compressToJpeg(rect, 50, out);
         byte[] jpegBytes = out.toByteArray();
-        return jpegBytes;
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(jpegBytes, 0, out.size());
+        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 32, 32, true);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        resized.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        Log.d("!!!", "convertToJpeg: " + byteArray.length);
+
+        return byteArray;
     }
 }
