@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         animator.start();
+        if (set) {
+            cameraScreen.onShowCamera();
+        } else {
+            cameraScreen.onCloseCamera();
+        }
     }
 
     public void setCallButtonsColor(int color) {

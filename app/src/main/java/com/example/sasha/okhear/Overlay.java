@@ -20,9 +20,6 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @EViewGroup
 public class Overlay extends RelativeLayout {
 

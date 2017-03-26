@@ -2,14 +2,9 @@ package com.example.sasha.okhear.camera;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.sasha.okhear.Overlay_;
 import com.example.sasha.okhear.R;
-import com.example.sasha.okhear.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -29,7 +23,6 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,6 +52,12 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     private Camera camera;
 
     private Timer timer = new Timer();
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            readyToSend.set(true);
+        }
+    };
 
     private volatile boolean startClicked = false;
     AtomicBoolean readyToSend = new AtomicBoolean(true);
@@ -103,7 +102,6 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                 Camera.Parameters params = camera.getParameters();
                 params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
                 camera.setParameters(params);
-                camera.startPreview();
             }
 
             @Override
@@ -125,8 +123,10 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
 
     @Click(R.id.start_button)
     void onStartButtonClick() {
+        Log.d("!!!", "onStartButtonClick: " + startClicked);
         if (!startClicked) {
             imagesServerCommunication.setCallback(this);
+            readyToSend.set(true);
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
@@ -136,6 +136,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                     }
                 }
             });
+            timer.schedule(timerTask, 400);
         } else {
             camera.setOneShotPreviewCallback(null);
             imagesServerCommunication.setCallback(null);
@@ -168,16 +169,23 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     @Override
     public void onResponse(String response) {
         try {
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    readyToSend.set(true);
-                }
-            }, 400);
+            timer.schedule(timerTask, 400);
             JSONObject json = new JSONObject(response);
             startText.setText(String.valueOf(json.get("gesture")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void onShowCamera() {
+        camera.startPreview();
+    }
+
+    public void onCloseCamera() {
+        camera.stopPreview();
+    }
+
+    private void swapCamera() {
+
     }
 }

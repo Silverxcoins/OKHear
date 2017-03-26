@@ -2,7 +2,6 @@ package com.example.sasha.okhear.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.util.Log;
 
 import java.io.IOException;
 
