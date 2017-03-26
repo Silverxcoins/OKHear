@@ -1,14 +1,24 @@
 package com.example.sasha.okhear.camera;
 
 import android.hardware.Camera;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.sasha.okhear.utils.Http;
 import com.example.sasha.okhear.utils.Utils;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -46,6 +56,37 @@ public class ImagesServerCommunication {
     void notifyGetResponse(String response) {
         if (callback != null) {
             callback.onResponse(response);
+        }
+    }
+
+    public void sendToServerWithSocket(final Camera camera, final byte[] data) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sendToServerSocketInternal(camera, data);
+            }
+        }).start();
+    }
+
+    private void sendToServerSocketInternal(Camera camera, byte[] data) {
+        byte[] jpegBytes = Utils.convertToJpeg(camera, data, null);
+        try {
+            Socket socket = new Socket("192.168.199.10", 5000);
+
+            try(InputStream in = socket.getInputStream();
+                OutputStream out = socket.getOutputStream()) {
+
+                out.write(jpegBytes);
+                out.flush();
+
+                byte[] responseBytes = new byte[1024 * 32];
+                int readBytes = in.read(responseBytes);
+
+                System.out.println("RESPONSE!!! " + new String(responseBytes, 0, readBytes));
+            }
+        } catch (IOException e) {
+
+            e.printStackTrace();
         }
     }
 }

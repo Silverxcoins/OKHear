@@ -132,7 +132,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
                     if (readyToSend.get()) {
                         readyToSend.set(false);
-                        imagesServerCommunication.sendToServer(camera, bytes);
+                        imagesServerCommunication.sendToServerWithSocket(camera, bytes);
                     }
                 }
             });
@@ -175,7 +175,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
             }, 400);
             JSONObject json = new JSONObject(response);
             startText.setText(String.valueOf(json.get("gesture")));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -195,15 +195,14 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         camera.stopPreview();
         camera.release();
 
-        if(cameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
+        if (cameraId == Camera.CameraInfo.CAMERA_FACING_BACK){
             cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
         }
         else {
             cameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
         }
         camera = Camera.open(cameraId);
-
-        setCameraDisplayOrientation();
+        camera.setDisplayOrientation(90);
         try {
             camera.setPreviewDisplay(surfaceHolder);
         } catch (IOException e) {
@@ -213,17 +212,5 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         if (startClicked) {
             startSendingFrames(true);
         }
-    }
-
-    private void setCameraDisplayOrientation() {
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + 270) % 360;
-            result = (360 - result) % 360;
-        } else {
-            result = (info.orientation + 90) % 360;
-        }
-        camera.setDisplayOrientation(result);
     }
 }

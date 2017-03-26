@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         cameraScreen = (CameraScreen_) findViewById(R.id.camera_screen);
         BarsUtil.setupFullscreenActivity(this);
         contactsFragment.setOverlay(overlay);
-        cameraScreen.setOverlay(overlay);
         overlay.setCameraScreen(cameraScreen);
         setContactsFragment();
     }
