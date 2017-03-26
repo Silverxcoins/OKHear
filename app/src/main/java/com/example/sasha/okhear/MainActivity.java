@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.sasha.okhear.camera.CameraScreen_;
 import com.example.sasha.okhear.utils.Preferences;
-import com.example.sasha.okhear.utils.StatusBarUtil;
+import com.example.sasha.okhear.utils.BarsUtil;
 import com.example.sasha.okhear.contacts.ContactsFragment_;
 import com.example.sasha.okhear.utils.Utils;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     @AfterViews
     protected void init() {
         cameraScreen = (CameraScreen_) findViewById(R.id.camera_screen);
-        StatusBarUtil.setupFullscreenActivity(this);
+        BarsUtil.setupFullscreenActivity(this);
         contactsFragment.setOverlay(overlay);
         cameraScreen.setOverlay(overlay);
         overlay.setCameraScreen(cameraScreen);

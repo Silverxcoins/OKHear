@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sasha.okhear.R;
-import com.example.sasha.okhear.utils.StatusBarUtil;
+import com.example.sasha.okhear.utils.BarsUtil;
 
 public class ContactItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -37,7 +37,7 @@ public class ContactItemViewHolder extends RecyclerView.ViewHolder {
     public void bind(ContactItem contact, Context context) {
         int height;
         if (getItemViewType() == ContactsAdapter.FIRST_EMPTY_CONTACT_ITEM_VIEW) {
-            height = searchBarHeight + StatusBarUtil.getStatusBarHeight(itemView.getContext());
+            height = searchBarHeight + BarsUtil.getStatusBarHeight(itemView.getContext());
         } else {
             height = contactItemViewHeight;
         }
