@@ -69,7 +69,7 @@ public class StartActivity extends Activity implements CameraBridgeViewBase.CvCa
                         // load cascade file from application resources
                         InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface);
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+                        mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_default.xml");
                         FileOutputStream os = new FileOutputStream(mCascadeFile);
 
                         byte[] buffer = new byte[4096];
@@ -80,7 +80,9 @@ public class StartActivity extends Activity implements CameraBridgeViewBase.CvCa
                         is.close();
                         os.close();
 
+                        Log.e(TAG, mCascadeFile.getAbsolutePath());
                         mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+                        mJavaDetector.load( mCascadeFile.getAbsolutePath() );
                         if (mJavaDetector.empty()) {
                             Log.e(TAG, "Failed to load cascade classifier");
                             mJavaDetector = null;
@@ -180,6 +182,7 @@ public class StartActivity extends Activity implements CameraBridgeViewBase.CvCa
         MatOfRect faces = new MatOfRect();
 
         if (mDetectorType == JAVA_DETECTOR) {
+//            Log.e(TAG, "Detection method");
             if (mJavaDetector != null)
                 mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                         new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
@@ -193,8 +196,9 @@ public class StartActivity extends Activity implements CameraBridgeViewBase.CvCa
         }
 
         Rect[] facesArray = faces.toArray();
+        Log.e(TAG, facesArray.toString());
         for (int i = 0; i < facesArray.length; i++)
-          Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
+            Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(), FACE_RECT_COLOR, 3);
 
         return mRgba;
     }

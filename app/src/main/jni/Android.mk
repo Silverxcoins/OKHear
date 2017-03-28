@@ -12,7 +12,7 @@ ifdef OPENCV_ANDROID_SDK
     include ${OPENCV_ANDROID_SDK}/sdk/native/jni/OpenCV.mk
   endif
 else
-  include /Users/Sasha/Desktop/OpenCV-android-sdk/sdk/native/jni/OpenCV.mk
+  include /home/temirlan/Android/OpenCV-android-sdk/sdk/native/jni/OpenCV.mk
 endif
 
 LOCAL_SRC_FILES  := DetectionBasedTracker_jni.cpp
