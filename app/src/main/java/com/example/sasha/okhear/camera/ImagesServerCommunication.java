@@ -70,8 +70,13 @@ public class ImagesServerCommunication {
 
     private void sendToServerSocketInternal(Camera camera, byte[] data) {
         byte[] jpegBytes = Utils.convertToJpeg(camera, data, null);
+        byte[] endBytes = "\r\r\n".getBytes();
+        byte[] result = new byte[jpegBytes.length + endBytes.length];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = i < jpegBytes.length ? jpegBytes[i] : endBytes[i - jpegBytes.length];
+        }
         try {
-            Socket socket = new Socket("192.168.199.10", 5000);
+            Socket socket = new Socket("62.109.1.48", 6000);
 
             try(InputStream in = socket.getInputStream();
                 OutputStream out = socket.getOutputStream()) {

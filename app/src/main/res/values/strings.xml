@@ -1,6 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OKHear</string>
-    <string name="search_hint">Contacts</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">OCV Face Detection</string>
 </resources>
