@@ -59,6 +59,13 @@ public class ImagesServerCommunication {
         }
     }
 
+    @UiThread
+    void notifySocketResponseRecieved(String response) {
+        if (callback != null) {
+            callback.onResponse(response);
+        }
+    }
+
     public void sendToServerWithSocket(final Camera camera, final byte[] data) {
         new Thread(new Runnable() {
             @Override
@@ -81,13 +88,13 @@ public class ImagesServerCommunication {
             try(InputStream in = socket.getInputStream();
                 OutputStream out = socket.getOutputStream()) {
 
-                out.write(jpegBytes);
+                out.write(result);
                 out.flush();
 
                 byte[] responseBytes = new byte[1024 * 32];
-                int readBytes = in.read(responseBytes);
+                in.read(responseBytes);
 
-                System.out.println("RESPONSE!!! " + new String(responseBytes, 0, readBytes));
+                notifySocketResponseRecieved(new String(responseBytes));
             }
         } catch (IOException e) {
 
