@@ -71,9 +71,9 @@ public class StartActivity extends Activity implements CameraBridgeViewBase.CvCa
 
                     try {
                         // load cascade file from application resources
-                        InputStream is = getResources().openRawResource(R.raw.cascade_1000_lab);
+                        InputStream is = getResources().openRawResource(R.raw.cascade_lab_1000);
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "cascade_1000_lab.xml");
+                        mCascadeFile = new File(cascadeDir, "cascade_lab_1000.xml");
                         FileOutputStream os = new FileOutputStream(mCascadeFile);
 
                         byte[] buffer = new byte[4096];
