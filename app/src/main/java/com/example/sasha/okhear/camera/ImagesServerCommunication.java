@@ -1,24 +1,16 @@
 package com.example.sasha.okhear.camera;
 
 import android.hardware.Camera;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.ImageView;
 
-import com.example.sasha.okhear.utils.Http;
-import com.example.sasha.okhear.utils.Utils;
+import com.example.sasha.okhear.utils.Ui;
 
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
-import org.androidannotations.annotations.SupposeBackground;
 import org.androidannotations.annotations.UiThread;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -60,35 +52,41 @@ public class ImagesServerCommunication {
         }
     }
 
-    public void sendToServerWithSocket(final Camera camera, final byte[] data) {
+    public void sendToServerWithSocket(final byte[] data) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                sendToServerSocketInternal(camera, data);
+                sendToServerSocketInternal(data);
             }
         }).start();
     }
 
-    private void sendToServerSocketInternal(Camera camera, byte[] data) {
-        byte[] jpegBytes = new byte[1]; /*Utils.by(camera, data, null);*/
+    private void sendToServerSocketInternal(byte[] data) {
         byte[] endBytes = "\r\r\n".getBytes();
-        byte[] result = new byte[jpegBytes.length + endBytes.length];
+        byte[] result = new byte[data.length + endBytes.length];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = i < jpegBytes.length ? jpegBytes[i] : endBytes[i - jpegBytes.length];
+            result[i] = i < data.length ? data[i] : endBytes[i - data.length];
         }
         try {
-            Socket socket = new Socket("62.109.1.48", 6000);
+            Socket socket = new Socket("62.109.1.48", 9000);
 
             try(InputStream in = socket.getInputStream();
                 OutputStream out = socket.getOutputStream()) {
 
-                out.write(jpegBytes);
+                out.write(result);
                 out.flush();
 
-                byte[] responseBytes = new byte[1024 * 32];
-                int readBytes = in.read(responseBytes);
+                final byte[] responseBytes = new byte[1024 * 32];
+                final int readBytes = in.read(responseBytes);
 
-                System.out.println("RESPONSE!!! " + new String(responseBytes, 0, readBytes));
+                if (callback != null) {
+                    Ui.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onResponse(new String(responseBytes, 0, readBytes));
+                        }
+                    });
+                }
             }
         } catch (IOException e) {
 

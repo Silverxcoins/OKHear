@@ -30,7 +30,6 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
@@ -65,8 +64,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     private int cameraId;
 
     private static final String TAG = "CameraScreen";
-    private static final int HAND_SIZE = 300;
-    private static final Scalar HAND_RECT_COLOR = new Scalar(255, 0, 255, 0);
+    private static final int HAND_SIZE = 100;
 
     private final ThreadLocal<File> cascadeFile = new ThreadLocal<>();
     private CascadeClassifier javaDetector;
@@ -164,12 +162,13 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
-//                    if (readyToSend.get()) {
-//                        readyToSend.set(false);
-//                        imagesServerCommunication.sendToServerWithSocket(camera, bytes);
-//                    }
-//                    camera.setPreviewCallback(null);
-                    detectHand(bytes, camera);
+                    if (readyToSend.get()) {
+                        byte[] resultBytes = detectHand(bytes, camera);
+                        if (resultBytes != null) {
+                            readyToSend.set(false);
+                            imagesServerCommunication.sendToServerWithSocket(resultBytes);
+                        }
+                    }
                 }
             });
         } else {
@@ -178,7 +177,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         }
     }
 
-    private void detectHand(byte[] bytes, Camera camera) {
+    private byte[] detectHand(byte[] bytes, Camera camera) {
         Bitmap bitmap = Utils.frameBytesToBitmap(camera, bytes, isFrontCamera());
         Mat rgba = new Mat();
         org.opencv.android.Utils.bitmapToMat(bitmap, rgba);
@@ -191,8 +190,11 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         org.opencv.android.Utils.matToBitmap(rgba, bitmap);
         if (handsArray.length > 0) {
             bitmap = Utils.cropBitmap(bitmap, handsArray[0]);
+            hand.setImageBitmap(bitmap);
+            return Utils.getSmallBitmapBytes(bitmap);
+        } else {
+            return null;
         }
-        hand.setImageBitmap(bitmap);
     }
 
     private void startStartButtonAnimation() {

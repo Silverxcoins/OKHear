@@ -8,7 +8,7 @@ import java.util.List;
 public class ContactsDataSource {
     private final List<ContactItem> contacts = new ArrayList<>();
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     public ContactsDataSource(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;

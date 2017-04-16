@@ -9,7 +9,6 @@ import android.view.View;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
@@ -31,12 +30,12 @@ public class Utils {
         if (x < 0) {
             x = 0;
         }
-        int y = rect.y - rect.height / 4;
+        int y = rect.y - rect.height / 2;
         if (y < 0) {
             y = 0;
         }
         int width = rect.width + rect.width / 2;
-        int height = rect.height + rect.height / 2;
+        int height = rect.height + rect.height;
         if (x + width > bitmap.getWidth()) {
             width = bitmap.getWidth() - x;
         }
@@ -53,13 +52,13 @@ public class Utils {
         int height = parameters.getPreviewSize().height;
 
         return rotateBitmap(bytesToBitmap(bytes, format, width, height), isFrontCamera);
+    }
 
-//        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 32, 32, true);
-//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//        resized.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//        byte[] byteArray = stream.toByteArray();
-
-//        Log.d("!!!", "convertToJpeg: " + byteArray.length);
+    public static byte[] getSmallBitmapBytes(Bitmap bitmap) {
+        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 32, 32, true);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        resized.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
 
     private static Bitmap bytesToBitmap(byte[] bytes, int format, int width, int height) {
