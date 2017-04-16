@@ -48,8 +48,9 @@ public class ImagesServerCommunication {
     }
 
     private String sendToServerInternal(Camera camera, byte[] bytes) {
-        byte[] jpegBytes = Utils.convertToJpeg(camera, bytes, null);
-        return Http.sendMultiPartPostRequest("", jpegBytes);
+//        byte[] jpegBytes = Utils.frameBytesToBitmap(camera, bytes);
+//        return Http.sendMultiPartPostRequest("", jpegBytes);
+        return "";
     }
 
     @UiThread
@@ -69,7 +70,7 @@ public class ImagesServerCommunication {
     }
 
     private void sendToServerSocketInternal(Camera camera, byte[] data) {
-        byte[] jpegBytes = Utils.convertToJpeg(camera, data, null);
+        byte[] jpegBytes = new byte[1]; /*Utils.by(camera, data, null);*/
         byte[] endBytes = "\r\r\n".getBytes();
         byte[] result = new byte[jpegBytes.length + endBytes.length];
         for (int i = 0; i < result.length; ++i) {

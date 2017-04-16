@@ -4,24 +4,13 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 
 public class DetectionBasedTracker {
-    public DetectionBasedTracker(String cascadeName, int minFaceSize) {
-        mNativeObj = nativeCreateObject(cascadeName, minFaceSize);
+    public DetectionBasedTracker(String cascadeName, int minHandSize) {
+        mNativeObj = nativeCreateObject(cascadeName, minHandSize);
     }
 
-    public void start() {
-        nativeStart(mNativeObj);
-    }
 
-    public void stop() {
-        nativeStop(mNativeObj);
-    }
-
-    public void setMinFaceSize(int size) {
+    public void setMinHandSize(int size) {
         nativeSetFaceSize(mNativeObj, size);
-    }
-
-    public void detect(Mat imageGray, MatOfRect faces) {
-        nativeDetect(mNativeObj, imageGray.getNativeObjAddr(), faces.getNativeObjAddr());
     }
 
     public void release() {
@@ -31,7 +20,7 @@ public class DetectionBasedTracker {
 
     private long mNativeObj = 0;
 
-    private static native long nativeCreateObject(String cascadeName, int minFaceSize);
+    private static native long nativeCreateObject(String cascadeName, int minHandSize);
 
     private static native void nativeDestroyObject(long thiz);
 

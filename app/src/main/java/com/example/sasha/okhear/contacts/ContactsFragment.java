@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.example.sasha.okhear.Overlay_;
+import com.example.sasha.okhear.Overlay;
 import com.example.sasha.okhear.R;
 import com.example.sasha.okhear.contacts.contacts_recycler_view.ContactItem;
 import com.example.sasha.okhear.contacts.contacts_recycler_view.ContactItemViewHolder;
@@ -34,7 +34,7 @@ public class ContactsFragment extends Fragment {
     @Bean
     Preferences preferences;
 
-    Overlay_ overlay;
+    Overlay overlay;
 
     public ContactsFragment() {
     }
@@ -69,7 +69,7 @@ public class ContactsFragment extends Fragment {
         });
     }
 
-    public void setOverlay(Overlay_ overlay) {
+    public void setOverlay(Overlay overlay) {
         this.overlay = overlay;
     }
 

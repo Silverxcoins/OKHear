@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryShow">#28aafc</color>
-    <color name="colorPrimarySpeak">#FF8A65</color>
+    <color name="colorPrimaryShow">#00ccff</color>
+    <color name="colorPrimarySpeak">#ffad73</color>
     <color name="avatarBotderColor">#33000000</color>
     <color name="searchFieldBackgroundColor">#BBFFFFFF</color>
     <color name="contactStripColor">#22000000</color>

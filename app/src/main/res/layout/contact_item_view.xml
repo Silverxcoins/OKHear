@@ -29,18 +29,10 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/contact_avatar_container"
         android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/contact_name_margin_start"
+        android:layout_marginStart="24dp"
         android:textSize="@dimen/contact_name_text_size"
         android:fontFamily="sans-serif-medium"
         android:text="Иван Иванов"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/contactStripColor"
-        android:layout_marginStart="@dimen/contact_strip_margin_start"
-        android:layout_marginEnd="@dimen/contact_strip_margin_end"
-        android:layout_alignParentBottom="true"/>
 
 
     <ImageView

@@ -4,10 +4,11 @@ import android.animation.ValueAnimator;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.sasha.okhear.camera.CameraScreen_;
+import com.example.sasha.okhear.camera.CameraScreen;
+import com.example.sasha.okhear.contacts.ContactsFragment;
+import com.example.sasha.okhear.contacts.ContactsFragment_;
 import com.example.sasha.okhear.utils.Preferences;
 import com.example.sasha.okhear.utils.BarsUtil;
-import com.example.sasha.okhear.contacts.ContactsFragment_;
 import com.example.sasha.okhear.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -22,17 +23,17 @@ public class MainActivity extends AppCompatActivity {
     Preferences preferences;
 
     @ViewById(R.id.overlay)
-    Overlay_ overlay;
+    Overlay overlay;
 
-    CameraScreen_ cameraScreen;
+    CameraScreen cameraScreen;
 
-    private ContactsFragment_ contactsFragment = new ContactsFragment_();
+    private ContactsFragment contactsFragment = ContactsFragment_.builder().build();
 
     private volatile boolean cameraScreenActive = false;
 
     @AfterViews
     protected void init() {
-        cameraScreen = (CameraScreen_) findViewById(R.id.camera_screen);
+        cameraScreen = (CameraScreen) findViewById(R.id.camera_screen);
         BarsUtil.setupFullscreenActivity(this);
         contactsFragment.setOverlay(overlay);
         overlay.setCameraScreen(cameraScreen);
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         final int height = cameraScreen.getHeight();
         final int startValue = set ? 0 - height : 0;
         final int endValue = set ? 0 : 0 - height;
-        ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
+        ValueAnimator animator =  ValueAnimator.ofInt(startValue, endValue);
         animator.setDuration(400);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         contactsFragment.setCallButtonsColor(color);
     }
 
-    public boolean isCameraScreenActive() {
+     public boolean isCameraScreenActive() {
         return cameraScreenActive;
     }
 

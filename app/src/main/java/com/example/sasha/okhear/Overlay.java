@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.example.sasha.okhear.camera.CameraScreen_;
+import com.example.sasha.okhear.camera.CameraScreen;
 import com.example.sasha.okhear.utils.Preferences;
 import com.example.sasha.okhear.utils.BarsUtil;
 import org.androidannotations.annotations.AfterViews;
@@ -52,7 +52,7 @@ public class Overlay extends RelativeLayout {
     View statusBarBackground;
 
     @ViewById(R.id.search_bar_with_status_background)
-    LinearLayout searchBarWithStatusBackground;
+    FrameLayout searchBarWithStatusBackground;
 
     @ViewById(R.id.right_main_button_icon)
     View rightButtonIcon;
@@ -72,7 +72,7 @@ public class Overlay extends RelativeLayout {
     @Bean
     Preferences preferences;
 
-    private CameraScreen_ cameraScreen;
+    private CameraScreen cameraScreen;
 
     private volatile boolean controlsHidden = false;
 
@@ -90,8 +90,12 @@ public class Overlay extends RelativeLayout {
 
     @AfterViews
     void init() {
-        statusBarBackground.getLayoutParams().height = BarsUtil.getStatusBarHeight(getContext());
+        int statusBarHeight = BarsUtil.getStatusBarHeight(getContext());
+        statusBarBackground.getLayoutParams().height = statusBarHeight;
         statusBarBackground.invalidate();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
+        layoutParams.setMargins(layoutParams.leftMargin, statusBarHeight, layoutParams.rightMargin, layoutParams.bottomMargin);
+        searchBar.invalidate();
         preferences.setSpeakOrShow(Preferences.SPEAK);
         setSpeakOrShow();
     }
@@ -175,7 +179,7 @@ public class Overlay extends RelativeLayout {
         }
     }
 
-    public void setCameraScreen(CameraScreen_ cameraScreen) {
+    public void setCameraScreen(CameraScreen cameraScreen) {
         this.cameraScreen = cameraScreen;
     }
 
@@ -251,13 +255,13 @@ public class Overlay extends RelativeLayout {
         statusBarBackground.setBackgroundColor(color);
         searchBarBackground.setColorFilter(color);
         overlayBottomLine.setBackgroundColor(color);
-        leftMainButtonBackground.setColorFilter(color);
-        rightMainButtonBackground.setColorFilter(color);
-        ((MainActivity_) getContext()).setCallButtonsColor(color);
+//        leftMainButtonBackground.setColorFilter(color);
+//        rightMainButtonBackground.setColorFilter(color);
+        ((MainActivity) getContext()).setCallButtonsColor(color);
     }
 
-    private MainActivity_ getMainActivity() {
-        return (MainActivity_) getContext();
+    private MainActivity getMainActivity() {
+        return (MainActivity) getContext();
     }
 
 }
