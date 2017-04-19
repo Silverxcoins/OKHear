@@ -50,8 +50,10 @@ public class Utils {
         int format = parameters.getPreviewFormat();
         int width = parameters.getPreviewSize().width;
         int height = parameters.getPreviewSize().height;
+        Bitmap bitmap = bytesToBitmap(bytes, format, width, height);
+        bitmap = Bitmap.createScaledBitmap(bitmap, width / 2, height / 2, true);
 
-        return rotateBitmap(bytesToBitmap(bytes, format, width, height), isFrontCamera);
+        return rotateBitmap(bitmap, isFrontCamera);
     }
 
     public static byte[] getSmallBitmapBytes(Bitmap bitmap) {

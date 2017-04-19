@@ -14,22 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sasha.okhear.R;
-import com.example.sasha.okhear.utils.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONObject;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfRect;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
@@ -42,7 +37,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("deprecation")
 @EViewGroup
-public class CameraScreen extends FrameLayout implements ImagesServerCommunication.Callback {
+public class CameraScreen extends FrameLayout
+        implements ImagesServerCommunication.Callback,  FrameManager.FrameProcessingListener {
 
     @ViewById(R.id.camera_view)
     SurfaceView cameraView;
@@ -59,12 +55,14 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
     @Bean
     ImagesServerCommunication imagesServerCommunication;
 
+    @Bean
+    FrameManager frameManager;
+
     private SurfaceHolder surfaceHolder;
     private Camera camera;
     private int cameraId;
 
     private static final String TAG = "CameraScreen";
-    private static final int HAND_SIZE = 100;
 
     private final ThreadLocal<File> cascadeFile = new ThreadLocal<>();
     private CascadeClassifier javaDetector;
@@ -157,43 +155,22 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
 
     private void startSendingFrames(boolean start) {
         if (start) {
+            frameManager.setFrameProcessingListener(this);
             imagesServerCommunication.setCallback(this);
             readyToSend.set(true);
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
                     if (readyToSend.get()) {
-                        byte[] resultBytes = detectHand(bytes, camera);
-                        if (resultBytes != null) {
-                            readyToSend.set(false);
-                            imagesServerCommunication.sendToServerWithSocket(resultBytes);
-                        }
+                        readyToSend.set(false);
+                        frameManager.detectHand(bytes, camera, javaDetector, isFrontCamera());
                     }
                 }
             });
         } else {
+            frameManager.setFrameProcessingListener(null);
             camera.setOneShotPreviewCallback(null);
             imagesServerCommunication.setCallback(null);
-        }
-    }
-
-    private byte[] detectHand(byte[] bytes, Camera camera) {
-        Bitmap bitmap = Utils.frameBytesToBitmap(camera, bytes, isFrontCamera());
-        Mat rgba = new Mat();
-        org.opencv.android.Utils.bitmapToMat(bitmap, rgba);
-        Mat gray = Utils.convertToGrayColors(rgba);
-        MatOfRect hands = new MatOfRect();
-        if (javaDetector != null) {
-            javaDetector.detectMultiScale(gray, hands, 1.15, 25, 2, new Size(HAND_SIZE, HAND_SIZE), new Size());
-        }
-        Rect[] handsArray = hands.toArray();
-        org.opencv.android.Utils.matToBitmap(rgba, bitmap);
-        if (handsArray.length > 0) {
-            bitmap = Utils.cropBitmap(bitmap, handsArray[0]);
-            hand.setImageBitmap(bitmap);
-            return Utils.getSmallBitmapBytes(bitmap);
-        } else {
-            return null;
         }
     }
 
@@ -218,8 +195,24 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         animator.start();
     }
 
+    @UiThread
+    @Override
+    public void onHandBitmapCreated(Bitmap bitmap) {
+        hand.setImageBitmap(bitmap);
+    }
+
+    @UiThread
+    @Override
+    public void onHandBytesReady(byte[] bytes) {
+        if (bytes != null) {
+            imagesServerCommunication.sendToServerWithSocket(bytes);
+        }
+    }
+
+    @UiThread
     @Override
     public void onResponse(String response) {
+        Log.d(TAG, "onResponse: " + response);
         try {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -305,6 +298,7 @@ public class CameraScreen extends FrameLayout implements ImagesServerCommunicati
         }
         cascadeDir.delete();
     }
+
     private boolean isFrontCamera() {
         return cameraId == Camera.CameraInfo.CAMERA_FACING_FRONT;
     }

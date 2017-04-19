@@ -2,8 +2,6 @@ package com.example.sasha.okhear.camera;
 
 import android.hardware.Camera;
 
-import com.example.sasha.okhear.utils.Ui;
-
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.UiThread;
 
@@ -80,16 +78,14 @@ public class ImagesServerCommunication {
                 final int readBytes = in.read(responseBytes);
 
                 if (callback != null) {
-                    Ui.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onResponse(new String(responseBytes, 0, readBytes));
-                        }
-                    });
+                    try {
+                        callback.onResponse(new String(responseBytes, 0, readBytes));
+                    } catch (StringIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } catch (IOException e) {
-
             e.printStackTrace();
         }
     }
