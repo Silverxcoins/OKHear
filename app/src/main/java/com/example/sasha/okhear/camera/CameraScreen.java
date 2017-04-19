@@ -52,6 +52,8 @@ public class CameraScreen extends FrameLayout
     @ViewById(R.id.hand)
     ImageView hand;
 
+    Timer timeoutTimer;
+
     @Bean
     ImagesServerCommunication imagesServerCommunication;
 
@@ -164,6 +166,13 @@ public class CameraScreen extends FrameLayout
                     if (readyToSend.get()) {
                         readyToSend.set(false);
                         frameManager.detectHand(bytes, camera, javaDetector, isFrontCamera());
+                        timeoutTimer = new Timer();
+                        timeoutTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                readyToSend.set(true);
+                            }
+                        }, 3000);
                     }
                 }
             });
@@ -214,8 +223,11 @@ public class CameraScreen extends FrameLayout
     public void onResponse(String response) {
         Log.d(TAG, "onResponse: " + response);
         try {
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
+            if (timeoutTimer != null) {
+                timeoutTimer.cancel();
+                timeoutTimer = null;
+            }
+            new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     readyToSend.set(true);
