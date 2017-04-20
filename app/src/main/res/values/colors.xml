@@ -5,4 +5,5 @@
     <color name="avatarBotderColor">#33000000</color>
     <color name="searchFieldBackgroundColor">#BBFFFFFF</color>
     <color name="contactStripColor">#22000000</color>
+    <color name="mainButtonsBackgroundColor">#ccffffff</color>
 </resources>

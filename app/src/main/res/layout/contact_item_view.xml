@@ -31,7 +31,6 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="24dp"
         android:textSize="@dimen/contact_name_text_size"
-        android:fontFamily="sans-serif-medium"
         android:text="Иван Иванов"/>
 
 

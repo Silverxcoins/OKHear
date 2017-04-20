@@ -9,14 +9,19 @@
         <FrameLayout
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/search_bar_height"
-            android:layout_marginLeft="-4dp"
-            android:layout_marginRight="-4dp">
+            android:layout_height="@dimen/search_bar_height">
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/circle_shadow"/>
 
             <ImageView
                 android:id="@+id/search_bar_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
                 android:src="@drawable/search_bar_background"/>
 
             <EditText
@@ -28,6 +33,8 @@
                 android:padding="@dimen/search_field_padding"
                 android:layout_marginLeft="@dimen/search_field_margin_horizontal"
                 android:layout_marginRight="@dimen/search_field_margin_horizontal"
+                android:text="Search"
+                android:textSize="14sp"
                 android:background="@drawable/search_field_background"
                 android:singleLine="true"/>
 
@@ -58,57 +65,46 @@
         android:id="@+id/left_main_button"
         android:layout_width="@dimen/main_button_diameter"
         android:layout_height="@dimen/main_button_diameter"
-        android:layout_alignParentBottom="true">
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/left_main_button_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="-1dp"
-            android:layout_marginBottom="-1dp"
-            android:src="@drawable/left_main_button_background"/>
+            android:src="@drawable/circle_button"/>
 
         <View
             android:id="@+id/left_main_button_icon"
             android:layout_width="@dimen/overlay_button_diameter"
             android:layout_height="@dimen/overlay_button_diameter"
-            android:layout_marginStart="@dimen/main_buttons_icons_margin"
-            android:layout_marginBottom="@dimen/main_buttons_icons_margin"
-            android:layout_gravity="bottom|start"
-            android:backgroundTint="@color/colorPrimaryShow"/>
+            android:layout_gravity="center" />
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/right_main_button"
         android:layout_width="@dimen/main_button_diameter"
         android:layout_height="@dimen/main_button_diameter"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/right_main_button_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="-1dp"
-            android:layout_marginBottom="-1dp"
-            android:src="@drawable/right_main_button_background"/>
+            android:src="@drawable/circle_button"/>
 
         <View
             android:id="@+id/right_main_button_icon"
             android:layout_width="@dimen/overlay_button_diameter"
             android:layout_height="@dimen/overlay_button_diameter"
-            android:layout_marginEnd="@dimen/main_buttons_icons_margin"
-            android:layout_marginBottom="@dimen/main_buttons_icons_margin"
-            android:layout_gravity="bottom|end"
-            android:background="@drawable/ic_camera"
-            android:backgroundTint="#ff6767"/>
+            android:layout_gravity="center"
+            android:background="@drawable/ic_camera" />
     </FrameLayout>
 
-    <View
-        android:id="@+id/overlay_bottom_line"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_strip_height"
-        android:layout_marginLeft="64dp"
-        android:layout_marginRight="64dp"
-        android:layout_alignParentBottom="true" />
 </merge>

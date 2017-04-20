@@ -2,7 +2,8 @@ package com.example.sasha.okhear;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.annotation.DrawableRes;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,6 +20,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.ColorRes;
 import org.androidannotations.annotations.res.DimensionPixelSizeRes;
+import org.androidannotations.annotations.res.DrawableRes;
 
 @EViewGroup
 public class Overlay extends RelativeLayout {
@@ -31,9 +33,6 @@ public class Overlay extends RelativeLayout {
 
     @ViewById(R.id.search_bar_background)
     ImageView searchBarBackground;
-
-    @ViewById(R.id.overlay_bottom_line)
-    View overlayBottomLine;
 
     @ViewById(R.id.left_main_button)
     FrameLayout leftMainButton;
@@ -67,6 +66,12 @@ public class Overlay extends RelativeLayout {
 
     @ColorRes(R.color.colorPrimarySpeak)
     int primarySpeakColor;
+
+    @ColorRes(R.color.mainButtonsBackgroundColor)
+    int mainButtonsBackgroundColor;
+
+    @DrawableRes(R.drawable.circle_button)
+    Drawable mainButtonsDrawable;
 
     @Bean
     Preferences preferences;
@@ -186,9 +191,11 @@ public class Overlay extends RelativeLayout {
         startSlideSearchBarAnimation(down);
         startRotateAnimation(leftMainButton, leftButtonIcon, getLeftButtonIconRes());
         startRotateAnimation(rightMainButton, rightButtonIcon, getRightButtonIconRes());
+        startButtonsColorAnimation(down);
     }
 
-    private void startRotateAnimation(final View button, final View buttonIconView, final @DrawableRes int iconRes) {
+    private void startRotateAnimation(final View button, final View buttonIconView,
+                                      final @android.support.annotation.DrawableRes int iconRes) {
         button.setEnabled(false);
         ValueAnimator rotationAnimator = ValueAnimator.ofFloat(0, 180);
         rotationAnimator.setDuration(500);
@@ -226,6 +233,30 @@ public class Overlay extends RelativeLayout {
         colorAnimator.start();
     }
 
+    private void startButtonsColorAnimation(final boolean toCamera) {
+        int cameraButtonColor = (preferences.getSpeakOrShow() == Preferences.SPEAK) ? primarySpeakColor : primaryShowColor;
+        int startColor = toCamera ? mainButtonsBackgroundColor : cameraButtonColor;
+        final int endColor = toCamera ?cameraButtonColor : mainButtonsBackgroundColor;
+        ValueAnimator colorAnimator = ValueAnimator.ofArgb(startColor, endColor);
+        colorAnimator.setDuration(500);
+        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int color = (Integer) valueAnimator.getAnimatedValue();
+                leftMainButtonBackground.setColorFilter(color);
+                rightMainButtonBackground.setColorFilter(color);
+                if (color == endColor && !toCamera) {
+                    leftMainButtonBackground.setBackground(mainButtonsDrawable);
+                    leftMainButtonBackground.setBackgroundColor(Color.TRANSPARENT);
+                    rightMainButtonBackground.setBackground(mainButtonsDrawable);
+                    rightMainButtonBackground.setBackgroundColor(Color.TRANSPARENT);
+
+                }
+            }
+        });
+        colorAnimator.start();
+    }
+
     private void setSpeakOrShow() {
         int speakOrShow = preferences.getSpeakOrShow();
         leftButtonIcon.setBackgroundResource(getLeftButtonIconRes());
@@ -233,7 +264,7 @@ public class Overlay extends RelativeLayout {
     }
 
     private
-    @DrawableRes
+    @android.support.annotation.DrawableRes
     int getLeftButtonIconRes() {
          if (!getMainActivity().isCameraScreenActive()) {
              int speakOrShow = preferences.getSpeakOrShow();
@@ -244,7 +275,7 @@ public class Overlay extends RelativeLayout {
     }
 
     private
-    @DrawableRes
+    @android.support.annotation.DrawableRes
     int getRightButtonIconRes() {
         boolean isCameraScreenActive = getMainActivity().isCameraScreenActive();
         return (isCameraScreenActive ? R.drawable.ic_contacts : R.drawable.ic_camera);
@@ -253,9 +284,6 @@ public class Overlay extends RelativeLayout {
     private void setMainColor(int color) {
         statusBarBackground.setBackgroundColor(color);
         searchBarBackground.setColorFilter(color);
-        overlayBottomLine.setBackgroundColor(color);
-//        leftMainButtonBackground.setColorFilter(color);
-//        rightMainButtonBackground.setColorFilter(color);
         ((MainActivity) getContext()).setCallButtonsColor(color);
     }
 

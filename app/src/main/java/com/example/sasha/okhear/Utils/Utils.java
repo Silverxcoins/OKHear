@@ -30,7 +30,7 @@ public class Utils {
         if (x < 0) {
             x = 0;
         }
-        int y = rect.y - rect.height / 2;
+        int y = rect.y - rect.height * 2 / 3;
         if (y < 0) {
             y = 0;
         }
