@@ -28,20 +28,20 @@
                 android:id="@+id/search_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:textAlignment="center"
                 android:padding="@dimen/search_field_padding"
                 android:layout_marginLeft="@dimen/search_field_margin_horizontal"
                 android:layout_marginRight="@dimen/search_field_margin_horizontal"
+                android:layout_marginTop="2dp"
                 android:text="Search"
                 android:textSize="14sp"
                 android:background="@drawable/search_field_background"
                 android:singleLine="true"/>
 
             <View
+                android:layout_marginTop="2dp"
                 android:layout_width="@dimen/my_avatar_diameter"
                 android:layout_height="@dimen/my_avatar_diameter"
-                android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/search_bar_button_margin_horizontal"
                 android:background="@drawable/avatar_shape"/>
 
@@ -49,7 +49,8 @@
                 android:id="@+id/add_contact_button"
                 android:layout_width="@dimen/overlay_button_diameter"
                 android:layout_height="@dimen/overlay_button_diameter"
-                android:layout_gravity="center_vertical|end"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="end"
                 android:layout_marginEnd="@dimen/search_bar_button_margin_horizontal"
                 android:background="@drawable/ic_add_contact"
                 android:backgroundTint="@android:color/white"/>

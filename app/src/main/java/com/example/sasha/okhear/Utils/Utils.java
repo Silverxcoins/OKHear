@@ -26,16 +26,16 @@ public class Utils {
     }
 
     public static Bitmap cropBitmap(Bitmap bitmap, Rect rect) {
-        int x = rect.x - rect.width / 4;
-        if (x < 0) {
-            x = 0;
-        }
+        int height = rect.height + rect.height;
+        int width = height * 576 / 1024;
         int y = rect.y - rect.height * 2 / 3;
         if (y < 0) {
             y = 0;
         }
-        int width = rect.width + rect.width / 2;
-        int height = rect.height + rect.height;
+        int x = rect.x - (width - rect.width) / 2;
+        if (x < 0) {
+            x = 0;
+        }
         if (x + width > bitmap.getWidth()) {
             width = bitmap.getWidth() - x;
         }
