@@ -1,7 +1,5 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="ic_speak_back_stroke_width">6dp</dimen>
     <dimen name="ic_speak_radius">16dp</dimen>
     <dimen name="ic_speak_diameter">32dp</dimen>

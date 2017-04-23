@@ -25,12 +25,14 @@ import org.json.JSONObject;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Rect;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,6 +53,9 @@ public class CameraScreen extends FrameLayout
 
     @ViewById(R.id.hand)
     ImageView hand;
+
+    @ViewById(R.id.detected_rectangles)
+    DetectedRectangles detectedRectangles;
 
     Timer timeoutTimer;
 
@@ -163,9 +168,9 @@ public class CameraScreen extends FrameLayout
             camera.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] bytes, final Camera camera) {
+                    frameManager.detectHand(bytes, camera, javaDetector, isFrontCamera());
                     if (readyToSend.get()) {
                         readyToSend.set(false);
-                        frameManager.detectHand(bytes, camera, javaDetector, isFrontCamera());
                         timeoutTimer = new Timer();
                         timeoutTimer.schedule(new TimerTask() {
                             @Override
@@ -206,8 +211,17 @@ public class CameraScreen extends FrameLayout
 
     @UiThread
     @Override
-    public void onHandBitmapCreated(Bitmap bitmap) {
-        hand.setImageBitmap(bitmap);
+    public void onHandBitmapCreated(FrameManager.BitmapWithCoords bitmapWithCoords,
+                                    Rect[] rects) {
+        Rect croppedRect = new Rect(
+                (int) bitmapWithCoords.getX(),
+                (int) bitmapWithCoords.getY(),
+                (int) bitmapWithCoords.getWidth(),
+                (int) bitmapWithCoords.getHeight()
+        );
+        detectedRectangles.setRectangles(rects, croppedRect);
+
+//        hand.setImageBitmap(bitmapWithCoords.getBitmap());
     }
 
     @UiThread

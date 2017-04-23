@@ -7,6 +7,8 @@ import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.view.View;
 
+import com.example.sasha.okhear.camera.FrameManager;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
@@ -25,7 +27,7 @@ public class Utils {
         return gray;
     }
 
-    public static Bitmap cropBitmap(Bitmap bitmap, Rect rect) {
+    public static FrameManager.BitmapWithCoords cropBitmap(Bitmap bitmap, Rect rect) {
         int height = rect.height + rect.height;
         int width = height * 576 / 1024;
         int y = rect.y - rect.height * 2 / 3;
@@ -42,7 +44,10 @@ public class Utils {
         if (y + height > bitmap.getHeight()) {
             height = bitmap.getHeight() - y;
         }
-        return Bitmap.createBitmap(bitmap, x, y, width, height);
+        return new FrameManager.BitmapWithCoords(
+                Bitmap.createBitmap(bitmap, x, y, width, height),
+                x, y, width, height
+        );
     }
 
     public static Bitmap frameBytesToBitmap(Camera camera, byte[] bytes, boolean isFrontCamera) {
@@ -75,6 +80,9 @@ public class Utils {
     private static Bitmap rotateBitmap(Bitmap bitmap, boolean isFrontCamera) {
         Matrix matrix = new Matrix();
         matrix.postRotate(isFrontCamera ? 270 : 90);
+        if (isFrontCamera) {
+            matrix.postScale(-1, 1, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+        }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }

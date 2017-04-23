@@ -19,7 +19,7 @@ public class FrameManager {
     private static final int HAND_SIZE = 100;
 
     public interface FrameProcessingListener {
-        void onHandBitmapCreated(Bitmap bitmap);
+        void onHandBitmapCreated(BitmapWithCoords bitmapWithCoords, Rect[] handsArray);
 
         void onHandBytesReady(byte[] bytes);
     }
@@ -43,11 +43,47 @@ public class FrameManager {
         Rect[] handsArray = hands.toArray();
         org.opencv.android.Utils.matToBitmap(rgba, bitmap);
         if (handsArray.length > 0) {
-            bitmap = Utils.cropBitmap(bitmap, handsArray[0]);
+            BitmapWithCoords bitmapWithCoords = Utils.cropBitmap(bitmap, handsArray[0]);
             if (frameProcessingListener != null) {
-                frameProcessingListener.onHandBitmapCreated(bitmap);
-                frameProcessingListener.onHandBytesReady(Utils.getSmallBitmapBytes(bitmap));
+                frameProcessingListener.onHandBitmapCreated(bitmapWithCoords, handsArray);
+                frameProcessingListener.onHandBytesReady(Utils.getSmallBitmapBytes(bitmapWithCoords.getBitmap()));
             }
+        }
+    }
+
+    public static class BitmapWithCoords {
+        private Bitmap bitmap;
+        private float x;
+        private float y;
+        private float width;
+        private float height;
+
+        public BitmapWithCoords(Bitmap bitmap, float x, float y, float width, float height) {
+            this.bitmap = bitmap;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+
+        public Bitmap getBitmap() {
+            return bitmap;
+        }
+
+        public float getX() {
+            return x;
+        }
+
+        public float getY() {
+            return y;
+        }
+
+        public float getWidth() {
+            return width;
+        }
+
+        public float getHeight() {
+            return height;
         }
     }
 }
